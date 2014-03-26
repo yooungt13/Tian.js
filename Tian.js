@@ -21,11 +21,21 @@
 			bindFunction: bindFunction,
 			addLoadEvent: addLoadEvent,
 			getEventObject: getEventObject,
+			getTarget: getTarget,
+			getMouseButton: getMouseButton,
+			getPointerPosition: getPointerPosition,
 			stopPropagation: stopPropagation,
 			preventDefault: preventDefault,
 
 			// css样式控制
 			camelize: camelize,
+			setStyleById: setStyleById,
+			setStyleByClassName: setStyleByClassName,
+			setStyleByTagName: setStyleByTagName,
+			getClassNames: getClassNames,
+			hasClassName: hasClassName，
+			addClassName: addClassName,
+			removeClassName: removeClassName,
 			toggleDisplay: toggleDisplay,
 			getBrowserWindowSize: getBrowserWindowSize,
 
@@ -189,6 +199,96 @@
 		return eventObject || window.event;
 	}
 
+	function getTarget(eventObject) {
+		eventObject = getEventObject(eventObject);
+
+		var target = eventObject.target || eventObject.srcElement;
+
+		// 如果是safari会指向文本节点，重新将目标指定为其父元素
+		if (target.nodeType == TIAN.node.TEXT_NODE) {
+			target = target.parentNode;
+		}
+
+		return target;
+	}
+
+	function getMouseButton(eventObject) {
+		eventObject = getEventObject(eventObject);
+
+		// 使用适当的属性初始化一个对象变量
+		var buttons = {
+			'left': false,
+			'middle': false,
+			'right': false
+		};
+
+		// 检查是否存在toString()并返回MouseEvent
+		if (eventObject.toString && eventObject.toString().indexOf('MouseEvent') != -1) {
+			switch (eventObject.button) {
+			case 0:
+				buttons.left = true;
+				break;
+			case 1:
+				buttons.middle = true;
+				break;
+			case 2:
+				buttons.right = true;
+				break;
+			default:
+				break;
+			}
+		} else if (eventObject.button) {
+			// IE的button事件检测方法
+			switch (eventObject.button) {
+			case 1:
+				buttons.left = true;
+				break;
+			case 2:
+				buttons.right = true;
+				break;
+			case 3:
+				buttons.left = true;
+				buttons.right = true;
+				break;
+			case 4:
+				buttons.middle = true;
+				break;
+			case 5:
+				buttons.left = true;
+				buttons.middle = true;
+				break;
+			case 6:
+				buttons.middle = true;
+				buttons.right = true;
+				break;
+			case 7:
+				buttons.left = true;
+				buttons.middle = true;
+				buttons.right = true;
+				break;
+			default:
+				break;
+			}
+
+		} else {
+			return false;
+		}
+
+		return buttons;
+	}
+
+	function getPointerPosition(eventObject) {
+		eventObject = getEventObject(eventObject);
+
+		var x = eventObject.pageX || (eventObject.clientX + (document.documentElement.scrollLeft || document.body.scrollLeft)),
+			y = eventObject.pageY || (eventObject.clientY + (document.documentElement.scrollTop || document.body.scrollTop));
+
+		return {
+			'x': x,
+			'y': y
+		};
+	}
+
 	function stopPropagation(eventObject) { // 阻止事件冒泡
 		eventObject = eventObject || getEventObject(eventObject);
 		if (eventObject.stopPropagation) {
@@ -298,6 +398,62 @@
 			// match为-s,word为(\w)匹配到的s,转化为S
 			return word.toUpperCase();
 		});
+	}
+
+	function setStyleById(element, styles) { // 通过ID修改样式
+		// 取得对象的引用
+		if (!(element = $(element))) return false;
+
+		// 循环遍历styles对象并应用每个属性
+		for (property in styles) {
+			// 如果传入样式不存在则跳过
+			if (!styles.hasOwnProperty(property)) continue;
+
+			if (element.style.setProperty) {
+				element.style.setProperty(property, styles[property]);
+			} else {
+				element.style[camelize(property)] = styles[property];
+			}
+		}
+		return true;
+	}
+
+	function setStyleByClassName(parent, tag, className, styles) { // 通过Class修改样式
+		// 取得对象的引用
+		if (!(parent = $(parent))) return false;
+
+		var elements = getElementByClassName(className, tag, parent);
+
+		for (var i = 0, len = elements.length; i < len; i++) {
+			setStyleById(elements[i], styles);
+		}
+		return true;
+	}
+
+	function setStyleByTagName(tag, styles, parent) { // 通过Tag修改样式
+		parent = parent || document;
+
+		var elements = parent.getElementsByTagName(tag);
+		for (var i = 0, len = elements.length; i < len; i++) {
+			setStyleById(elements[i], styles);
+		}
+		return true;
+	}
+
+	function getClassNames (argument) {
+		// body...
+	}
+
+	function hasClassName (argument) {
+		// body...
+	}
+
+	function addClassName (argument) {
+		// body...
+	}
+
+	function removeClassName (argument) {
+		// body...
 	}
 
 	function message(config) {
