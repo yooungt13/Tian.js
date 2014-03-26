@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>GntDOM Demo</title>
+	<script type='text/javascript' src='../Tian.js'></script>
+	<script type='text/javascript' src='../Tian.generateDOM.js'></script>
+</head>
+<body>
+	<div>
+	<textarea name="source" id="source" cols="30" rows="10"></textarea>
+	<textarea name="result" id="result" cols="30" rows="10"></textarea>
+	</div>
+	<button id='generate'>Generate</button>
+
+	<script>
+		(function(){
+			var source = TIAN.$('source'),
+				result = TIAN.$('result'),
+				btn = TIAN.$('generate');
+			
+			//TIAN.log.write("value: "+source.value);
+
+			TIAN.addEvent(btn,'click',function() {
+				result.value = TIAN.generateDOM(source.value);
+				TIAN.message(result.value);
+			});
+		})();	
+	</script>
+</body>
+</html>
