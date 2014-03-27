@@ -440,12 +440,14 @@
 		return true;
 	}
 
-	function getClassNames (argument) {
-		// body...
+	function getClassNames (element) {
+		if(!(element=$(element))) return false;
+		// 用一个空格替换多个空格，然后基于空格分割类名
+		return element.className.replace(/\s+/,' ').split(' ');
 	}
 
 	function hasClassName (argument) {
-		// body...
+		if(!(element=$(element))) return false;
 	}
 
 	function addClassName (argument) {
