@@ -1,4 +1,4 @@
-(function () {
+(function() {
 	// 工具库名，修改NAME即可成为任意库，并进行扩展
 	var NAME = 'TIAN';
 
@@ -59,7 +59,7 @@
 	}
 
 	/* 原型函数扩充 ************************************ */
-	Function.prototype.method = function (name, func) {
+	Function.prototype.method = function(name, func) {
 		if (!this.prototype[name]) {
 			this.prototype[name] = func;
 			return this;
@@ -70,19 +70,19 @@
 	 * 使构造函数“继承”其他构造函数
 	 * 实际上是将构造函数的原型对象替换为另外构造函数产生的对象
 	 */
-	Function.method('inherit', function (Parent) {
+	Function.method('inherit', function(Parent) {
 		this.prototype = new Parent();
 		return this;
 	});
 
 	if (!String.repeat) {
-		String.prototype.repeat = function (len) {
+		String.prototype.repeat = function(len) {
 			return new Array(len + 1).join(this);
 		};
 	}
 
 	if (!String.trim) {
-		String.prototype.trim = function () {
+		String.prototype.trim = function() {
 			return this.replace(/^\s+|\s+$/g, '');
 		}
 	}
@@ -122,7 +122,7 @@
 
 		node.addEventListener ?
 			node.addEventListener(type, handler, false) :
-			node.attachEvent('on' + type, function () {
+			node.attachEvent('on' + type, function() {
 				handler.call(node);
 			});
 	}
@@ -133,13 +133,13 @@
 
 		node.removeEventListener ?
 			node.removeEventListener(type, handler, false) :
-			node.detachEvent('on' + type, function () {
+			node.detachEvent('on' + type, function() {
 				handler.call(node);
 			});
 	}
 
 	function bindFunction(obj, func) {
-		return function () {
+		return function() {
 			func.apply(obj, arguments);
 		}
 	}
@@ -156,7 +156,7 @@
 		 *	以便为this制定正确内容
 		 *	同时确保事件不会被执行两次
 		 */
-		var init = function () {
+		var init = function() {
 			// 如果这个函数已经被调用过了则返回
 			if (arguments.callee.done) return;
 
@@ -172,7 +172,7 @@
 
 		// 对于safari，使用setInterval()函数检测document是否载入完成
 		if (/Webkit/i.test(navigator.userAgent)) {
-			var _timer = setInterval(function () {
+			var _timer = setInterval(function() {
 				if (/loaded|complete/.test(document.readyState)) {
 					clearInterval(_timer);
 					init();
@@ -225,49 +225,49 @@
 		// 检查是否存在toString()并返回MouseEvent
 		if (eventObject.toString && eventObject.toString().indexOf('MouseEvent') != -1) {
 			switch (eventObject.button) {
-			case 0:
-				buttons.left = true;
-				break;
-			case 1:
-				buttons.middle = true;
-				break;
-			case 2:
-				buttons.right = true;
-				break;
-			default:
-				break;
+				case 0:
+					buttons.left = true;
+					break;
+				case 1:
+					buttons.middle = true;
+					break;
+				case 2:
+					buttons.right = true;
+					break;
+				default:
+					break;
 			}
 		} else if (eventObject.button) {
 			// IE的button事件检测方法
 			switch (eventObject.button) {
-			case 1:
-				buttons.left = true;
-				break;
-			case 2:
-				buttons.right = true;
-				break;
-			case 3:
-				buttons.left = true;
-				buttons.right = true;
-				break;
-			case 4:
-				buttons.middle = true;
-				break;
-			case 5:
-				buttons.left = true;
-				buttons.middle = true;
-				break;
-			case 6:
-				buttons.middle = true;
-				buttons.right = true;
-				break;
-			case 7:
-				buttons.left = true;
-				buttons.middle = true;
-				buttons.right = true;
-				break;
-			default:
-				break;
+				case 1:
+					buttons.left = true;
+					break;
+				case 2:
+					buttons.right = true;
+					break;
+				case 3:
+					buttons.left = true;
+					buttons.right = true;
+					break;
+				case 4:
+					buttons.middle = true;
+					break;
+				case 5:
+					buttons.left = true;
+					buttons.middle = true;
+					break;
+				case 6:
+					buttons.middle = true;
+					buttons.right = true;
+					break;
+				case 7:
+					buttons.left = true;
+					buttons.middle = true;
+					buttons.right = true;
+					break;
+				default:
+					break;
 			}
 
 		} else {
@@ -394,7 +394,7 @@
 	}
 
 	function camelize(str) { // 修改内嵌样式，如font-size转化为fontSize		
-		return str.replace(/-(\w)/g, function (match, word) {
+		return str.replace(/-(\w)/g, function(match, word) {
 			// match为-s,word为(\w)匹配到的s,转化为S
 			return word.toUpperCase();
 		});
@@ -440,22 +440,46 @@
 		return true;
 	}
 
-	function getClassNames (element) {
-		if(!(element=$(element))) return false;
+	function getClassNames(element) {
+		if (!(element = $(element))) return false;
 		// 用一个空格替换多个空格，然后基于空格分割类名
-		return element.className.replace(/\s+/,' ').split(' ');
+		return element.className.replace(/\s+/, ' ').split(' ');
 	}
 
-	function hasClassName (argument) {
-		if(!(element=$(element))) return false;
+	function hasClassName(element) {
+		if (!(element = $(element))) return false;
+
+		var classes = getClassNames(element);
+		for (var i = 0; i < classes.length; i++) {
+			// 检测className是否匹配，如果是返回
+			if (classes[i] === className) return true;
+		}
+
 	}
 
-	function addClassName (argument) {
-		// body...
+	function addClassName(element) {
+		if (!(element = $(element))) return false;
+		// 将类名添加到当前className的末尾
+		// 如果没有className,则不包含空格
+		element.className += (element.className ? ' ' : '') + className;
+		return true;
 	}
 
-	function removeClassName (argument) {
-		// body...
+	function removeClassName(element, className) {
+		if (!(element = $(element))) return false;
+		var classes = getElementByClassName(element),
+			length = classes.length;
+
+		// 循环遍历数组删除匹配的项
+		// 因为从数组中删除会使数组变短，所以反向循环
+		for (var i = length - 1; i >= 0; i--) {
+			if (classes[i] === = className) {
+				delete(classes[i]);
+			}
+		}
+
+		element.className = classes.join(' ');
+		return (length == classes.length ? false : true);
 	}
 
 	function message(config) {
@@ -475,7 +499,7 @@
 		id = id || 'TianLogWindow';
 		var logWindow = null;
 		// 用受保护的方法创建日志
-		var createWindow = function () {
+		var createWindow = function() {
 			// 创建作为日志窗口的DOM节点
 			logWindow = document.createElement('ul');
 			logWindow.setAttribute('id', id);
@@ -496,7 +520,7 @@
 			// 新建MsgBox将logWindow加入
 			document.body.appendChild(logWindow);
 		};
-		this.writeRaw = function (message) {
+		this.writeRaw = function(message) {
 			if (!logWindow) createWindow();
 
 			var li = document.createElement('li');
@@ -518,7 +542,7 @@
 		};
 	}
 	Logger.prototype = {
-		write: function (message) {
+		write: function(message) {
 			// 如果字符为空
 			if (typeof message == 'string' && message.length == 0) {
 				return this.writeRaw('TIAN.log: null message.');
@@ -534,12 +558,12 @@
 			message = message.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 			return this.writeRaw(message);
 		},
-		header: function (message) {
+		header: function(message) {
 			// 向日志中写入一个标题
 			message = '<span style="color:white;background:black;font-weight:bold;padding:0px 5px;">' + message + '</span>'
 			return this.writeRaw(message);
 		},
-		link: function (link) {}
+		link: function(link) {}
 	};
 	window[NAME]['log'] = new Logger();
 
@@ -553,7 +577,7 @@
 		Content: "Content here",
 		IsBar: 1,
 		IsShut: 1,
-		init: function (config) {
+		init: function(config) {
 			if (config) {
 				this.BoxWidth = config.width || this.BoxWidth;
 				this.BoxHeight = config.height || this.BoxHeight;
@@ -564,17 +588,17 @@
 			}
 			return this;
 		},
-		open: function (config) {
+		open: function(config) {
 			this.init(config);
 			this.createBox();
 			this.createMask();
 			return this.box;
 		},
-		close: function () {
+		close: function() {
 			this.removeBox();
 			this.removeMask();
 		},
-		createBox: function () {
+		createBox: function() {
 			this.box = this.box || document.createElement("div");
 			this.setBoxStyle();
 			document.body.appendChild(this.box);
@@ -588,19 +612,19 @@
 				if (this.IsShut) {
 					var shut = $("box_shut"),
 						_this = this;
-					addEvent(shut, 'click', function (e) {
+					addEvent(shut, 'click', function(e) {
 						_this.fillTitle("");
 						_this.zoomOut();
 					});
 				}
 			} else {
 				var _this = this;
-				addEvent(this.box, 'click', function (e) {
+				addEvent(this.box, 'click', function(e) {
 					_this.zoomOut();
 				});
 			}
 		},
-		setBoxStyle: function () {
+		setBoxStyle: function() {
 			this.box.id = "box";
 			this.box.style.background = "#222";
 			this.box.style.position = "absolute";
@@ -627,12 +651,12 @@
 			innerString += '<div id="content" style="padding: 1em 1em;"></div>';
 			this.box.innerHTML = innerString;
 		},
-		createMask: function () {
+		createMask: function() {
 			this.mask = this.mask || document.createElement("div");
 			this.setMaskStyle();
 			document.body.appendChild(this.mask);
 		},
-		setMaskStyle: function () {
+		setMaskStyle: function() {
 			this.mask.id = "mask";
 			this.mask.style.background = "#000";
 			this.mask.style.position = "fixed";
@@ -644,20 +668,20 @@
 			this.mask.style.opacity = "0.5";
 			this.mask.style.zIndex = 1000;
 		},
-		removeBox: function () {
+		removeBox: function() {
 			document.body.removeChild(this.box);
 		},
-		removeMask: function () {
+		removeMask: function() {
 			document.body.removeChild(this.mask);
 		},
-		normalIn: function () {
+		normalIn: function() {
 			this.box.style.display = "block";
 			this.fillContent(this.Content);
 		},
-		zoomIn: function () {
+		zoomIn: function() {
 			var coe = 1,
 				tmpWidth, tmpHeight;
-			var zoomInTimer = setInterval(function () {
+			var zoomInTimer = setInterval(function() {
 				tmpWidth = this.BoxWidth * coe / 10,
 				tmpHeight = this.BoxHeight * coe / 10;
 				if (coe === 10) {
@@ -674,7 +698,7 @@
 				}
 			}.bind(this), 10);
 		},
-		zoomOut: function () {
+		zoomOut: function() {
 			var coe = 10,
 				tmpWidth, tmpHeight;
 			this.fillContent("");
@@ -683,7 +707,7 @@
 			var desX = this.getLeft(this.BoxWidth) - parseInt(this.box.style.left),
 				desY = this.getTop(this.BoxHeight) - parseInt(this.box.style.top);
 
-			var zoomOutTimer = setInterval(function () {
+			var zoomOutTimer = setInterval(function() {
 				tmpWidth = this.BoxWidth * coe / 10,
 				tmpHeight = this.BoxHeight * coe / 10;
 				if (coe === 1) {
@@ -699,7 +723,7 @@
 				}
 			}.bind(this), 10);
 		},
-		setDragListener: function () {
+		setDragListener: function() {
 			var bar = $("bar"),
 				_this = this;
 
@@ -710,7 +734,7 @@
 				_Y: 0,
 				isDrag: false
 			};
-			addEvent(bar, 'mousedown', function (e) {
+			addEvent(bar, 'mousedown', function(e) {
 				var e = e || window.event;
 				params.isDrag = true;
 				params._X = e.clientX;
@@ -719,11 +743,11 @@
 				params.startY = _this.box.style.top;
 			});
 
-			addEvent(document, 'mouseup', function (e) {
+			addEvent(document, 'mouseup', function(e) {
 				params.isDrag = false;
 			});
 
-			addEvent(document, 'mousemove', function (e) {
+			addEvent(document, 'mousemove', function(e) {
 				var e = e || window.event;
 
 				if (params.isDrag) {
@@ -737,16 +761,16 @@
 				}
 			});
 		},
-		fillContent: function (content) {
+		fillContent: function(content) {
 			$("content").innerHTML = content;
 		},
-		fillTitle: function (title) {
+		fillTitle: function(title) {
 			$("bar").innerHTML = title;
 		},
-		getLeft: function (width) {
+		getLeft: function(width) {
 			return (document.body.offsetWidth - width) / 2;
 		},
-		getTop: function (height) {
+		getTop: function(height) {
 			return (document.body.offsetHeight - height) / 2 + document.documentElement.scrollTop;
 		}
 	}
