@@ -29,6 +29,7 @@
 
 			// css样式控制
 			camelize: camelize,
+			setStyle: setStyleById,
 			setStyleById: setStyleById,
 			setStyleByClassName: setStyleByClassName,
 			setStyleByTagName: setStyleByTagName,
@@ -229,7 +230,8 @@
 			'right': false
 		};
 
-		// 检查是否存在toString()并返回MouseEvent
+		// 按照W3C标准检查是否含有toString方法，
+		// 若包含toString()并返回MouseEvent，则可以按标准进行
 		if (eventObject.toString && eventObject.toString().indexOf('MouseEvent') != -1) {
 			switch (eventObject.button) {
 				case 0:
