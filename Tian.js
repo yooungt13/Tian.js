@@ -494,7 +494,7 @@
 
 	function removeClassName(element, className) {
 		if (!(element = $(element))) return false;
-		var classes = getElementByClassName(element),
+		var classes = getClassNames(element),
 			length = classes.length;
 
 		// 循环遍历数组删除匹配的项
