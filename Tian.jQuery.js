@@ -99,10 +99,15 @@
 			return this;
 		},
 		setOpacity: function(number) {
-
+			if (this[0].filters) {
+				this[0].style.filter = "alpha(opacity=" + number + ")";
+			} else {
+				this[0].style.opactiy = number / 100;
+			}
 		},
 		// 动画效果
 		slide: function(options) {
+
 
 		},
 
@@ -190,9 +195,10 @@
 
 		},
 		createXHR: function() {
-
+			return Tian.ajax.createXHR();
 		},
 		ajax: function(url, opt) {
+			Tian.ajax.send(url, opt);
 			return this;
 		},
 		// 鼠标位置
