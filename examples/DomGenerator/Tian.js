@@ -9,7 +9,7 @@
 
 			// DOM操作
 			$: $,
-			getElementByClassName: getElementByClassName,
+			getElementsByClassName: getElementsByClassName,
 			walkTheDOM: walkTheDOM,
 			insertAfter: insertAfter,
 			removeChildren: removeChildren,
@@ -314,7 +314,7 @@
 		}
 	}
 
-	function getElementByClassName(className, tag, parent) {
+	function getElementsByClassName(className, tag, parent) {
 		parent = parent || document;
 
 		// 查找所有匹配的标签
@@ -324,7 +324,7 @@
 
 		// 创建一个正则表达式，来判断className是否正确
 		className = className.replace(/\-/g, "\\-");
-		var pattern = new RegExp("(^|\\s)" + className + "(\\s|$)");
+		var pattern = new RegExp("\\s*" + className + "\\s*");
 
 		var element;
 		// 检查每个元素

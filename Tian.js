@@ -9,7 +9,7 @@
 
 			// DOM操作
 			$: $,
-			getElementByClassName: getElementByClassName,
+			getElementsByClassName: getElementsByClassName,
 			walkTheDOM: walkTheDOM,
 			insertAfter: insertAfter,
 			removeChildren: removeChildren,
@@ -29,6 +29,7 @@
 
 			// css样式控制
 			camelize: camelize,
+			setStyle: setStyleById,
 			setStyleById: setStyleById,
 			setStyleByClassName: setStyleByClassName,
 			setStyleByTagName: setStyleByTagName,
@@ -229,7 +230,8 @@
 			'right': false
 		};
 
-		// 检查是否存在toString()并返回MouseEvent
+		// 按照W3C标准检查是否含有toString方法，
+		// 若包含toString()并返回MouseEvent，则可以按标准进行
 		if (eventObject.toString && eventObject.toString().indexOf('MouseEvent') != -1) {
 			switch (eventObject.button) {
 				case 0:
@@ -314,7 +316,7 @@
 		}
 	}
 
-	function getElementByClassName(className, tag, parent) {
+	function getElementsByClassName(className, tag, parent) {
 		parent = parent || document;
 
 		// 查找所有匹配的标签
@@ -324,7 +326,7 @@
 
 		// 创建一个正则表达式，来判断className是否正确
 		className = className.replace(/\-/g, "\\-");
-		var pattern = new RegExp("(^|\\s)" + className + "(\\s|$)");
+		var pattern = new RegExp("\\s*" + className + "\\s*");
 
 		var element;
 		// 检查每个元素
@@ -492,7 +494,7 @@
 
 	function removeClassName(element, className) {
 		if (!(element = $(element))) return false;
-		var classes = getElementByClassName(element),
+		var classes = getClassNames(element),
 			length = classes.length;
 
 		// 循环遍历数组删除匹配的项

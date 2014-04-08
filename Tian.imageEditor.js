@@ -1,0 +1,1 @@
+window['TIAN']['imageEditor'] = imageEditor;
