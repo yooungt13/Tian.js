@@ -7,8 +7,8 @@
  *
  * @author: 有田十三 || yooungt@gmail.com
  * @Weibo ：http://weibo.com/yooungt
- * @date  : 2014-04-04
  * @Github: https://github.com/yooungt13
+ * @date  : 2014-04-04
  *
  * Copyright (c) 2014 有田十三
  * -----------------------------------------------------
@@ -87,10 +87,12 @@
 		// 绑定事件
 		bind: function(type, handler) {
 			Tian.Event.addEvent(this[0], type, handler);
+			return this;
 		},
 		// 移除事件
 		unbind: function(type, handler) {
 			Tian.Event.removeEvent(this[0], type, handler);
+			return this;
 		},
 		// 显示元素
 		show: function() {
@@ -108,6 +110,7 @@
 			} else {
 				this[0].style.opactiy = number / 100;
 			}
+			return this;
 		},
 		// 动画效果
 		slide: function(options) {},
@@ -186,9 +189,15 @@
 		isChinese: function(value) {
 			return Tian.regExp.isChinese(value);
 		},
-		setCookie: function(options) {},
-		getCookie: function(cookie) {},
-		deleteCookie: function(cookie) {},
+		setCookie: function(options) {
+			Tian.cookie.setCookie(options);
+		},
+		getCookie: function(cookie) {
+			Tian.cookie.getCookie(cookie);
+		},
+		deleteCookie: function(cookie) {
+			Tian.cookie.deleteCookie(cookie);
+		},
 		createXHR: function() {
 			return Tian.ajax.createXHR();
 		},
@@ -208,6 +217,23 @@
 					window.innerWidth || (de && de.clientWidth) || document.body.clientWidth),
 				'height': (
 					window.innerHeight || (de && de.clientHeight) || document.body.clientHeight)
+			}
+		},
+		message: function(config) {
+			/* config {
+			    width: 600,
+			    height: 400,
+			    title: 'Hi buddy',
+			    content: 'that\'s what I said, hmm?',
+			    isBar: 0
+			}*/
+			var box = Tian.UI.MsgBox();
+			if (typeof config === 'string') {
+				box.open({
+					content: config
+				});
+			} else {
+				box.open(config);
 			}
 		}
 	});
@@ -274,6 +300,11 @@
 				'x': x,
 				'y': y
 			};
+		},
+		// 鼠标滚轮事件时，滚动的值，让各个浏览器表现一致
+		getWheelDelta: function(event) {
+			return event.wheelDelta ?
+				event.wheelDelta : -event.detail * 40;
 		},
 		// 鼠标按键被按下事件捕获
 		getButton: function(event) {
@@ -479,7 +510,12 @@
 				return "No cookie!";
 			}
 		},
-		deleteCookie: function(cookie) {}
+		deleteCookie: function(cookie) {
+			var exp = new Date();
+			exp.setTime(exp.getTime() - 100000);
+			var cval = Tian.cookie.getCookie(name);
+			if ( !! cval) document.cookie = name + '=;expires=' + exp.toGMTString();
+		}
 	};
 
 	Tian.ajax = {
@@ -533,8 +569,237 @@
 		// 判断是否是中文
 		isChinese: function(word) {
 			return /[\u4E00-\uFA29]+|[\uE7C7-\uE7F3]+/.test(word);
+		},
+		// 判断是否是身份证
+		isIdentifier: function(num) {
+			return /^[1-9]\d{5}[1|2]\d{3}((0\d)|(1[0-2]))(([0-2]\d)|(3[0-1]))(\d{4}|\d{3}x)$/.test(num);
+		},
+		// 判断是否符合登录名，数字字母下划线
+		isLoginId: function(str) {
+			return /[A-Za-z0-9_]/.test(str);
 		}
 	};
 
-	Tian.UI = {};
+	Tian.UI = {
+		MsgBox: function(options) {
+			return {
+				box: null,
+				mask: null,
+				BoxWidth: 300,
+				BoxHeight: 200,
+				Title: 'Hi buddy',
+				Content: 'config {<br>&nbsp;&nbsp;width: 300,<br>&nbsp;&nbsp;height: 300,<br>&nbsp;&nbsp;title: "Hi buddy",<br>&nbsp;&nbsp;content: "Content here",<br>&nbsp;&nbsp;isBar: 0<br>}',
+				IsBar: 1,
+				IsShut: 1,
+				init: function(config) {
+					if (config) {
+						this.BoxWidth = config.width || this.BoxWidth;
+						this.BoxHeight = config.height || this.BoxHeight;
+						this.Title = config.title || this.Title;
+						this.Content = config.content || this.Content;
+						this.IsBar = (config.isBar !== undefined) ? config.isBar : this.IsBar;
+						this.IsShut = (config.isShut !== undefined) ? config.isShut : this.IsShut;
+					} else {
+						//console.log('Error: config is not found.')
+					}
+					return this;
+				},
+				open: function(config) {
+					this.init(config);
+					this.createBox();
+					this.createMask();
+					return this.box;
+				},
+				close: function() {
+					this.removeBox();
+					this.removeMask();
+				},
+				createBox: function() {
+					this.box = this.box || document.createElement("div");
+					this.setBoxStyle();
+					document.body.appendChild(this.box);
+
+					//this.normalIn();
+					this.zoomIn();
+
+					if (this.IsBar) {
+						this.setDragListener();
+
+						if (this.IsShut) {
+							var shut = Tian.dom.id("box_shut"),
+								_this = this;
+							Tian.Event.addEvent(shut, 'click', function(e) {
+								_this.fillTitle("");
+								_this.zoomOut();
+							});
+						}
+					} else {
+						var _this = this;
+						Tian.Event.addEvent(this.box, 'click', function(e) {
+							_this.zoomOut();
+						});
+					}
+				},
+				setBoxStyle: function() {
+					this.box.id = "box";
+					Tian.dom.setStyle(this.box, {
+						'background': '#222',
+						'position': 'absolute',
+						'border': '4px solid #000',
+						'width': this.BoxWidth + 'px',
+						'height': this.BoxHeight + 'px',
+						'left': this.getLeft(this.BoxWidth) + 'px',
+						'top': this.getTop(this.BoxHeight) + 'px',
+						'display': 'none',
+						'test-align': 'left',
+						'color': 'white',
+						'box-shadow': '#000 3px 3px 4px',
+						'z-index': 1001,
+						'overflow': 'hidden'
+					});
+
+					var innerString = '';
+					if (this.IsBar) {
+						innerString += '<div id="bar" style="line-height: 28px;padding-left:1em;background:#000;cursor:move;">' + this.Title;
+						if (this.IsShut) {
+							innerString += '<a id="box_shut" style="color:#fff;position:absolute;cursor:pointer;font-weight:bold;top:0px;right:10px;text-decoration: none;">×</a>';
+						}
+						innerString += '</div>';
+					}
+					innerString += '<div id="content" style="padding: 1em 1em;"></div>';
+					this.box.innerHTML = innerString;
+				},
+				createMask: function() {
+					this.mask = this.mask || document.createElement("div");
+					this.setMaskStyle();
+					document.body.appendChild(this.mask);
+				},
+				setMaskStyle: function() {
+					this.mask.id = "mask";
+					Tian.dom.setStyle(this.mask, {
+						'background': '#000',
+						'position': 'fixed',
+						'width': '100%',
+						'height': '100%',
+						'left': 0,
+						'top': 0,
+						'display': 'block',
+						'opacity': 0.5,
+						'z-index': 1000
+					});
+				},
+				removeBox: function() {
+					document.body.removeChild(this.box);
+				},
+				removeMask: function() {
+					document.body.removeChild(this.mask);
+				},
+				normalIn: function() {
+					this.box.style.display = "block";
+					this.fillContent(this.Content);
+				},
+				zoomIn: function() {
+					var coe = 1,
+						tmpWidth, tmpHeight;
+					var zoomInTimer = setInterval(function() {
+						tmpWidth = this.BoxWidth * coe / 10,
+						tmpHeight = this.BoxHeight * coe / 10;
+						if (coe === 10) {
+							clearInterval(zoomInTimer);
+							this.fillContent(this.Content);
+							return;
+						} else {
+							this.box.style.display = "block";
+							this.box.style.width = tmpWidth + 'px';
+							this.box.style.height = tmpHeight + 'px';
+							this.box.style.left = this.getLeft(tmpWidth) + 'px';
+							this.box.style.top = this.getTop(tmpHeight) + 'px';
+							coe++;
+						}
+					}.bind(this), 10);
+				},
+				zoomOut: function() {
+					var coe = 10,
+						tmpWidth, tmpHeight;
+					this.fillContent("");
+					this.removeMask();
+
+					var desX = this.getLeft(this.BoxWidth) - parseInt(this.box.style.left),
+						desY = this.getTop(this.BoxHeight) - parseInt(this.box.style.top);
+
+					var zoomOutTimer = setInterval(function() {
+						tmpWidth = this.BoxWidth * coe / 10,
+						tmpHeight = this.BoxHeight * coe / 10;
+						if (coe === 1) {
+							clearInterval(zoomOutTimer);
+							this.removeBox();
+							return;
+						} else {
+							this.box.style.width = tmpWidth + 'px';
+							this.box.style.height = tmpHeight + 'px';
+							this.box.style.left = this.getLeft(tmpWidth) - desX + 'px';
+							this.box.style.top = this.getTop(tmpHeight) - desY + 'px';
+							coe--;
+						}
+					}.bind(this), 10);
+				},
+				setDragListener: function() {
+					var bar = Tian.dom.id("bar"),
+						_this = this;
+
+					var params = {
+						startX: 0,
+						startY: 0,
+						_X: 0,
+						_Y: 0,
+						isDrag: false
+					};
+					Tian.Event.addEvent(bar, 'mousedown', function(e) {
+						var e = e || window.event;
+						params.isDrag = true;
+						params._X = e.clientX;
+						params._Y = e.clientY;
+						params.startX = _this.box.style.left;
+						params.startY = _this.box.style.top;
+					});
+
+					Tian.Event.addEvent(document, 'mouseup', function(e) {
+						params.isDrag = false;
+					});
+
+					Tian.Event.addEvent(document, 'mousemove', function(e) {
+						var e = e || window.event;
+
+						if (params.isDrag) {
+							var currX = e.clientX,
+								currY = e.clientY,
+								desX = currX - params._X + parseInt(params.startX),
+								desY = currY - params._Y + parseInt(params.startY);
+
+							_this.box.style.left = desX + 'px';
+							_this.box.style.top = desY + 'px';
+						}
+					});
+				},
+				fillContent: function(content) {
+					Tian.dom.id("content").innerHTML = content;
+				},
+				fillTitle: function(title) {
+					Tian.dom.id("bar").innerHTML = title;
+				},
+				getLeft: function(width) {
+					return (document.body.offsetWidth - width) / 2;
+				},
+				getTop: function(height) {
+					return (document.body.offsetHeight - height) / 2 + document.documentElement.scrollTop;
+				}
+			};
+		},
+		Logger: function() {
+
+		},
+		autoComp: function() {
+
+		}
+	};
 })()

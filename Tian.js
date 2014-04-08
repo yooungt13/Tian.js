@@ -690,8 +690,7 @@
 			// 向日志中写入一个标题
 			message = '<span style="color:white;background:black;font-weight:bold;padding:0px 5px;">' + message + '</span>'
 			return this.writeRaw(message);
-		},
-		link: function(link) {}
+		}
 	};
 	window[NAME]['log'] = new Logger();
 
