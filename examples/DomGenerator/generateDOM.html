@@ -3,8 +3,6 @@
 <head>
 	<meta charset="UTF-8">
 	<title>GntDOM Demo</title>
-	<script type='text/javascript' src='../Tian.js'></script>
-	<script type='text/javascript' src='../Tian.generateDOM.js'></script>
 </head>
 <body>
 	<div>
@@ -13,6 +11,8 @@
 	</div>
 	<button id='generate'>Generate</button>
 
+	<script type='text/javascript' src='./Tian.js'></script>
+	<script type='text/javascript' src='./Tian.generateDOM.js'></script>
 	<script>
 		(function(){
 			var source = TIAN.$('source'),
@@ -23,7 +23,7 @@
 
 			TIAN.addEvent(btn,'click',function() {
 				result.value = TIAN.generateDOM(source.value);
-				TIAN.message('A message.');
+				//TIAN.message('A message.');
 			});
 		})();	
 	</script>

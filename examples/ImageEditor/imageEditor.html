@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Image Editor Test Page</title>
+        <!-- inclue some CSS style sheet to make everything look a little nicer -->
+        <link rel="stylesheet" type="text/css" href="style.css" />
+    </head>
+    <body>
+        <h1>Edit Your Images</h1>
+        <div id="content">
+            <ul>
+                <li>
+                    <form action="/path/to/server/script" method="post" class="imageEditor">
+                        <img id="mintImage" src="images/mint.jpg"/>
+                        <fieldset>
+                            <legend>New Size</legend>
+                            <div>
+                                <label>Width</label><input type="text" name="newWidth">
+                            </div>
+                            <div>
+                                <label>Height</label><input type="text" name="newHeight">
+                                <p>The width and height applies to the
+                                original uncropped image</p>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Trim Edges</legend>
+                            <div>
+                                <label>Top</label><input type="text" name="cropTop">
+                            </div>
+                            <div>
+                                <label>Rigt</label><input type="text" name="cropRight">
+                            </div>
+                            <div>
+                                <label>Bottom</label><input type="text" name="cropBottom">
+                            </div>
+                            <div>
+                                <label>Left</label><input type="text" name="cropLeft">
+                            </div>
+                        </fieldset>
+                        <div class="buttons">
+                            <input type="submit" value="Apply">
+                            <input type="reset" value="Reset">
+                        </div>
+                    </form>
+                </li>
+            </ul>
+        </div>
+        <!-- Your ADS library with the common JavaScript objects -->
+        <script type="text/javascript" src="./Tian.js"></script>
+        <script type="text/javascript" src="./Tian.imageEditor.js"></script>
+    </body>
+</html>
