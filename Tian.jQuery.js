@@ -37,7 +37,7 @@
 				return this;
 			}
 			// 如果selector是string，则当作ID返回DOM对象
-			if (typeof selector === "string") {
+			if (typeof selector == "string") {
 				this[0] = document.getElementById(selector);
 			}
 			return this;
@@ -49,7 +49,7 @@
 		},
 		// 读写HTML
 		html: function(html) {
-			if (typeof html !== 'undefined') {
+			if (typeof html != 'undefined') {
 				this[0].innerHTML = html;
 				return this;
 			} else {
@@ -58,16 +58,24 @@
 		},
 		// 读写CSS样式
 		css: function(prop, value) {
-			if (typeof value !== 'undefined') {
+			if (typeof value != 'undefined') {
 				Tian.dom.setStyle(this[0], prop, value);
 				return this;
 			} else {
-				if (typeof prop === 'string') {
+				if (typeof prop == 'string') {
 					return Tian.dom.getStyle(this[0], prop);
-				} else if (typeof prop === 'object') {
+				} else if (typeof prop == 'object') {
 					Tian.dom.setStyle(this[0], prop);
 					return this;
 				}
+			}
+		},
+		attr: function(attr,value) {
+			if (typeof value == 'undefined') {
+				return this[0].getAttribute(attr);		
+			} else {
+				this[0].setAttribute(attr,value);
+				return this;
 			}
 		},
 		// 判断样式是否存在
@@ -168,21 +176,26 @@
 			clock += (day + hour + minute + second);
 			return (clock);
 		},
+		isType: function(type) {
+			return function(obj) {
+				return Object.prototype.toString.call(obj) == '[object ' + type + ']';
+			};
+		},
 		isString: function(value) {
-			return typeof value === 'string';
+			return this.isType('String')(value);
 		},
 		isNumber: function(value) {
-			return typeof value === 'number';
+			return this.isType('Number')(value);
 		},
 		isFunction: function(value) {
-			return typeof value === 'function';
+			return this.isType('Function')(value);
 		},
 		isBoolean: function(value) {
-			return typeof value === 'boolean';
+			return this.isType('Boolean')(value);
 		},
 		isArray: function(array) {
-			return (arr && typeof arr === 'object' && typeof arr.length === 'number' && !arr.propertyIsEnumerable('length'));
-		}
+			return Array.isArray || this.isType('Array')(array);;
+		},
 		isNaN: function(obj) {
 			return obj !== obj;
 		},
@@ -231,7 +244,7 @@
 			    isBar: 0
 			}*/
 			var box = Tian.UI.MsgBox();
-			if (typeof config === 'string') {
+			if (typeof config == 'string') {
 				box.open({
 					content: config
 				});
@@ -414,7 +427,7 @@
 				return null;
 		},
 		setStyle: function(el, prop, value) {
-			if (typeof value !== 'undefined') {
+			if (typeof value != 'undefined') {
 				if (el.style.setProperty) {
 					el.style.setProperty(prop, value);
 				} else {
