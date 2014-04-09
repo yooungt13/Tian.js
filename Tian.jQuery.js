@@ -180,6 +180,9 @@
 		isBoolean: function(value) {
 			return typeof value === 'boolean';
 		},
+		isArray: function(array) {
+			return (arr && typeof arr === 'object' && typeof arr.length === 'number' && !arr.propertyIsEnumerable('length'));
+		}
 		isNaN: function(obj) {
 			return obj !== obj;
 		},
