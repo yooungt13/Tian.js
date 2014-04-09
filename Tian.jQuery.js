@@ -70,11 +70,19 @@
 				}
 			}
 		},
-		attr: function(attr,value) {
+		attr: function(attr, value) {
 			if (typeof value == 'undefined') {
-				return this[0].getAttribute(attr);		
+				return this[0].getAttribute(attr);
 			} else {
-				this[0].setAttribute(attr,value);
+				this[0].setAttribute(attr, value);
+				return this;
+			}
+		},
+		val: function(value) {
+			if (typeof value == 'undefined') {
+				return this[0].value;
+			} else {
+				this[0].value = value;
 				return this;
 			}
 		},
@@ -319,6 +327,7 @@
 		},
 		// 鼠标滚轮事件时，滚动的值，让各个浏览器表现一致
 		getWheelDelta: function(event) {
+			event = this.getEvent(event);
 			return event.wheelDelta ?
 				event.wheelDelta : -event.detail * 40;
 		},
