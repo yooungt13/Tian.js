@@ -203,7 +203,7 @@
 			return this.isType('Boolean')(value);
 		},
 		isArray: function(array) {
-			return Array.isArray || this.isType('Array')(array);;
+			return Array.isArray(array) || this.isType('Array')(array);;
 		},
 		isNaN: function(obj) {
 			return obj !== obj;
@@ -244,6 +244,7 @@
 					window.innerHeight || (de && de.clientHeight) || document.body.clientHeight)
 			}
 		},
+		// 解析URL
 		parseURL: function(url) {
 			var a = document.createElement('a');
 			a.href = url;
