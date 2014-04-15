@@ -13,7 +13,8 @@
  * Copyright (c) 2014 有田十三
  * -----------------------------------------------------
  */
-;(function() {
+;
+(function() {
 	// 缓存初始$使用环境
 	var _$ = window.$;
 
@@ -242,6 +243,33 @@
 				'height': (
 					window.innerHeight || (de && de.clientHeight) || document.body.clientHeight)
 			}
+		},
+		parseURL: function(url) {
+			var a = document.createElement('a');
+			a.href = url;
+
+			return {
+				source: url,
+				protocol: a.protocol.replace(':', ''),
+				host: a.hostname,
+				port: a.port,
+				query: a.search,
+				params: (function() {
+					var ret = {},s,
+						seg = a.search.replace(/^\?/,'').split('&');
+
+					for( var i = 0, len = seg.length; i < len; i++ ){
+						if( !seg[i] ) continue;
+						s = seg[i].split('=');
+						ret[s[0]] = s[1];
+					}
+					return ret;
+				})(),
+				file: (a.pathname.match(/\/([^\/?#]+)$/i) || [, ''])[1],
+				hash: a.hash.replace('#', ''),
+				path: a.pathname.replace(/^([^\/])/, '/$1'),
+				segments: a.pathname.replace(/^\//, '').split('/')
+			};
 		},
 		message: function(config) {
 			/* config {
