@@ -167,7 +167,7 @@
 		},
 		// 返回本地格式时间：2014年4月5日
 		now: function() {
-			return new Date().toLocalString();
+			return new Date().toLocaleString();
 		},
 		// 获取当前时间：20140405132323
 		getTime: function() {
