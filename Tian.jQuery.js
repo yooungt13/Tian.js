@@ -256,11 +256,11 @@
 				port: a.port,
 				query: a.search,
 				params: (function() {
-					var ret = {},s,
-						seg = a.search.replace(/^\?/,'').split('&');
+					var ret = {}, s,
+						seg = a.search.replace(/^\?/, '').split('&');
 
-					for( var i = 0, len = seg.length; i < len; i++ ){
-						if( !seg[i] ) continue;
+					for (var i = 0, len = seg.length; i < len; i++) {
+						if (!seg[i]) continue;
 						s = seg[i].split('=');
 						ret[s[0]] = s[1];
 					}
@@ -271,6 +271,12 @@
 				path: a.pathname.replace(/^([^\/])/, '/$1'),
 				segments: a.pathname.replace(/^\//, '').split('/')
 			};
+		},
+		find: function(arr, value) {
+			return Tian.algorithm.find.binary(arr, value);
+		},
+		sort: function(arr) {
+			return Tian.algorithm.sort.bubble(arr);
 		},
 		message: function(config) {
 			/* config {
@@ -854,6 +860,50 @@
 		},
 		autoComp: function() {
 
+		}
+	};
+
+	Tian.algorithm = {
+		sort: {
+			bubble: function(arr) {
+				for (var i = 0, len = arr.length; i < len; i++) {
+					for (var j = len - 1; j > 0; j--) {
+						if (arr[j - 1] > arr[j]) {
+							arr[j - 1] = [arr[j], arr[j] = arr[j - 1]][0];
+						}
+					}
+				}
+				return arr;
+			}
+		},
+		find: {
+			binary: function(arr, value) {
+				var left = 0,
+					right = arr.length - 1,
+					center;
+
+				while (left <= right) {
+					center = Math.floor((left + right) / 2);
+					if (arr[center] === value) break;
+					else if (arr[center] < value) {
+						left = center + 1;
+					} else {
+						right = center - 1;
+					}
+				}
+
+				return center;
+			}
+		},
+		shuffle: function(arr) {
+			return arr.sort(function() {
+				return Math.random() - 0.5;
+			});
+		},
+		random: function(n) {
+			var result = '';
+			for (; result.length < n; result += Math.random().toString(36).substr(2)) {}
+			return result.substr(0, n);
 		}
 	};
 })()
