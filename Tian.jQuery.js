@@ -874,6 +874,22 @@
 					}
 				}
 				return arr;
+			},
+			insert: function(arr){
+				var p,key;
+				for( var i = 0, len = arr.length; i < len; i++ ){
+					p = i;
+					key = arr[p];
+					while( --p > -1 ){
+						if( arr[p] > key ){
+							arr[p+1] = arr[p];
+						}else{
+							break;
+						}
+					}
+					arr[p+1] = key;
+				}
+				return arr;
 			}
 		},
 		find: {
