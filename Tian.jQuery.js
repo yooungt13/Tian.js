@@ -272,6 +272,24 @@
 				segments: a.pathname.replace(/^\//, '').split('/')
 			};
 		},
+		load: function(url) {
+			var script = document.createElement('script');
+			script.type = 'text/javascript';
+
+			if (script.readyState) {
+				script.onreadystatechange = function() {
+					if (script.readyState == 'completed' || script.readyState == 'loaded')
+						callback();
+				}
+			} else {
+				script.onload = function() {
+					callback();
+				}
+			}
+
+			script.src = url;
+			document.body.appendChild(script);
+		},
 		find: function(arr, value) {
 			return Tian.algorithm.find.binary(arr, value);
 		},
@@ -875,19 +893,19 @@
 				}
 				return arr;
 			},
-			insert: function(arr){
-				var p,key;
-				for( var i = 0, len = arr.length; i < len; i++ ){
+			insert: function(arr) {
+				var p, key;
+				for (var i = 0, len = arr.length; i < len; i++) {
 					p = i;
 					key = arr[p];
-					while( --p > -1 ){
-						if( arr[p] > key ){
-							arr[p+1] = arr[p];
-						}else{
+					while (--p > -1) {
+						if (arr[p] > key) {
+							arr[p + 1] = arr[p];
+						} else {
 							break;
 						}
 					}
-					arr[p+1] = key;
+					arr[p + 1] = key;
 				}
 				return arr;
 			}
