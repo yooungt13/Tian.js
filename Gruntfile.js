@@ -32,7 +32,7 @@ module.exports = function(grunt) {
                     undef: true,
                     unused: true,
                     trailing: true,
-                    maxlen: 120
+                    //maxlen: 120
                 }
             }
         }
