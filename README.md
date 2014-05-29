@@ -7,6 +7,8 @@ __So, what is Tian.js?__
 
 What all I have done and will do is to make me get warmer about js, know what a library relly is and then make one by myself, which is named Tian.js just now.I'm looking forward about it in the future.    
 
+AFK
+
 To be continued...
 
 
