@@ -514,7 +514,7 @@
 		hasClass: function(el, className) {
 			// 创建一个正则表达式，来判断className是否正确
 			className = className.replace(/\-/g, "\\-");
-			var pattern = new RegExp("\\s*" + className + "\\s*");
+			var pattern = new RegExp("(^|\\s)" + className + "(\\s|$)");
 			if (pattern.test(el.className)) {
 				return true;
 			} else {
@@ -532,16 +532,21 @@
 		},
 		removeClass: function(el, className) {
 			if (el.className !== '' && this.hasClass(el, className)) {
-				var classes = getClassNames(el),
+				var classes = this.getClassNames(el),
 					length = classes.length;
 				// 循环遍历数组删除匹配的项
 				// 因为从数组中删除会使数组变短，所以反向循环
 				for (var i = length - 1; i >= 0; i--) {
 					if (classes[i] === className) {
-						delete(classes[i]);
+						classes.splice(i,1);
 					}
 				}
-				el.className = classes.join(' ');
+				if( classes.length > 1 ){
+					el.className = classes.join(' ');
+				}else{
+					el.className = classes[0];
+				}
+
 				return (length == classes.length ? false : true);
 			}
 		},
